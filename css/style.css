@@ -451,3 +451,86 @@ footer{
     font-size: 14px;
 }
 
+/* Responsividade */
+
+@media screen and (max-width: 768px) {
+    header {
+        padding: 1rem;
+    }
+
+    header > a {
+        padding: 0 1rem;
+    }
+
+    nav {
+        width: 50%;
+    }
+
+    .page {
+        padding: 5%;
+    }
+
+    #page1 {
+        padding-top: 5%;
+    }
+
+    .conteudo_page1 {
+        width: 100%;
+        text-align: center;
+    }
+
+    .h1_page1 {
+        font-size: 3rem;
+    }
+
+    .p2_page1 {
+        font-size: 24px;
+    }
+
+    .box_page2 {
+        flex-wrap: wrap;
+    }
+
+    .projetos {
+        width: 100%;
+    }
+
+    .relogio,
+    .megasena1,
+    .megasena2,
+    .megasena3 {
+        width: 60px;
+        height: 60px;
+    }
+
+    .h2_page2 {
+        font-size: 20px;
+    }
+
+    .p1_page2 {
+        font-size: 1rem;
+    }
+
+    .p2_page2 {
+        font-size: 16px;
+    }
+
+    .conteudo_page3 {
+        margin-bottom: 1rem;
+    }
+
+    .habilidaes {
+        width: 40px;
+        height: 40px;
+    }
+
+    .icones {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+
+    .info {
+        text-align: center;
+    }
+}
