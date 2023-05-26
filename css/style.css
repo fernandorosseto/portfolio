@@ -94,7 +94,7 @@ nav>a.selected::after {
     content: "";
     position: absolute;
     height: 4px;
-    background-color:rgba(153, 194, 33, 1);
+    background-color:#f9ce0f;
     bottom: 1px;
     width: 80%;
     margin-left: 10%;
@@ -103,7 +103,7 @@ nav>a.selected::after {
 }
 
 a:hover::after {
-    background-color:rgba(153, 194, 33, 1);
+    background-color: #f9ce0f;
     width: 0%;
     animation: animnav ease-out .3s;
     animation-fill-mode: forwards;
@@ -131,6 +131,10 @@ main{
     
 }
 
+.page{
+    padding: 7%;
+}
+
 /* Página inicial */
 
 #page1{
@@ -147,7 +151,7 @@ main{
 .p1_page1{
     font-size: 19px;
     text-transform: uppercase;
-    color: rgba(153, 194, 33, 1);
+    color: #f9ce0f;
     font-weight: 700;
 
 }
@@ -182,8 +186,8 @@ main{
     justify-content: center;
     align-items: center;
     margin-top: 25px;
-    width: 60%;
-    height: 70%;
+    width: 100%;
+    height: 100%;
     background: rgba( 127, 125, 115, 0.15 );
     box-shadow: 0 5px 10px 1px rgba(191, 201, 161, 0.315);
     border-radius: 10px;
@@ -351,19 +355,99 @@ main{
 
 
 
-#page3{
+#page3 {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    height: 100vh;
+    font-size: 1.3rem;
+   
+}
+
+.pad10px{
+    padding: 10px;
+}
+
+.imagem-png {
+    image-rendering: smooth;
+  }
+
+
+.conteudo_page3 {
+    width: 50%;
+    box-sizing: border-box;
+    padding: 5px;
+    
+}
+
+
+.conteudo_page3:nth-child(1) {
     width: 100%;
-    height: 90vh;
-    display: grid;
-    grid-template-columns: ;
+    text-align: center;
+    
+}
+
+
+.sobremim{
+    text-transform: uppercase; 
+    letter-spacing: 4px;
+}
+
+.sobremim::after{
+    display: block;
+    content: "";
+    position: absolute;
+    height: 17px;
+    width: 188px;
+    background-color: #f9ce0f;
+    opacity: .4;
+    left: 0;
+    right: 0;
+    margin: auto;
+    transform: translateY(-18px);
+
+}
+
+.habilidaes {
+    display: inline-flex;
     
 }
 
 footer{
-    background-color: black;/*somente para texte*/
-    width: 100%;
-    height: 10vh;
-    bottom: 0;
+    padding: 20px;
+    text-align: center;
+    background-color: #f9ce0fd0;
    
+}
+
+
+.conteudo-footer {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+  
+.icones {
+    margin-bottom: 10px;
+}
+  
+.icones a {
+    display: inline-block;
+    margin: 0 10px;
+}
+  
+.icones img {
+    width: 30px;
+    height: 30px;
+}
+  
+.info {
+    width: 100%;
+    text-align: center;
+}
+  
+.info p {
+    margin: 5px 0;
+    font-size: 14px;
 }
 
