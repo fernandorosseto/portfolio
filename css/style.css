@@ -496,9 +496,9 @@ footer{
         font-size: 24px;
     }
 
-    .page2{
+    #page2{
         height: 100vh;
-        padding-top: 20%;
+        padding-top: 15%;
     }
 
     .box_page2 {
@@ -536,6 +536,11 @@ footer{
 
     .p2_page2 {
         font-size: 16px;
+    }
+
+    #page3{
+        padding-top: 12%;
+        height: 100vh;
     }
 
     #page3>div>p {
