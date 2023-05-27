@@ -478,8 +478,8 @@ footer{
 
     #page1 {
        height: 100vh;
-       padding-top: 50%;
-       padding-bottom: 50%;
+       padding-top: 40%;
+       padding-bottom: 40%;
     }
 
     .conteudo_page1 {
@@ -543,6 +543,7 @@ footer{
     #page3{
         height: 100vh;
         padding-bottom: 20%;
+        padding-top: 20%;
     }
 
     #page3>div>p {
