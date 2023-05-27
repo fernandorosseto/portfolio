@@ -419,9 +419,18 @@ main {
 
 }
 
-.habilidaes {
-    display: inline-flex;
+.habilidades {
+    display: grid;
+    grid-template-columns: 3rf;
+    align-items: center;
+    justify-content: center;
     
+}
+
+.conteudo-habilidades{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    gap: 10px;
 }
 
 footer{
