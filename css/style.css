@@ -372,6 +372,7 @@ main {
 
 #page3 h1{
     letter-spacing: 1.3px;
+    text-align: center;
 }
 
 .pad10px{
@@ -555,9 +556,14 @@ footer{
 
     }
 
-
     .conteudo_page3 {
         margin-bottom: 1rem;
+        padding: 0 1rem;
+    
+    }
+
+    #page3 h1{
+        font-size: 1.3rem;
     }
 
     .habilidaes {
