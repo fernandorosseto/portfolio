@@ -477,9 +477,9 @@ footer{
     }
 
     #page1 {
-       height: 100%;
-       padding-top: 25%;
-       padding-bottom: 25%;
+       height: 100vh;
+       padding-top: 65%;
+       padding-bottom: 65%;
     }
 
     .conteudo_page1 {
@@ -498,7 +498,8 @@ footer{
 
     #page2{
         height: 100vh;
-        padding-top: 15%;
+        padding-top: 25%;
+        padding-bottom: 20%;
     }
 
     .box_page2 {
@@ -508,7 +509,7 @@ footer{
     .projetos {
         position: relative;
         flex: 0 0 300px;
-        height: 350px;
+        height: 250px;
         background: #0F2027;
         background: -webkit-linear-gradient(to right, #2C5364, #203A43, #0F2027);
         background: linear-gradient(to right, #2C5364, #203A43, #0F2027);
@@ -517,6 +518,7 @@ footer{
         box-shadow: 0 5px 23px 0 rgba(3, 3, 3, 0.493);
         border-radius: 10px;
         transition: ease-in-out .15s;
+      
     }
 
     .megasena1,
@@ -539,8 +541,8 @@ footer{
     }
 
     #page3{
-        padding-top: 12%;
         height: 100vh;
+        padding-bottom: 20%;
     }
 
     #page3>div>p {
