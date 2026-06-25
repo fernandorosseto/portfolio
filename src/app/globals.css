@@ -679,6 +679,7 @@ html, body {
 
 .orcamento-container {
   height: 100vh;
+  height: 100dvh; /* Corrige o bug da barra do navegador cortando conteúdo no mobile */
   overflow: hidden;
   background-color: var(--bg-ice-white);
   color: var(--text-secondary);
