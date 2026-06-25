@@ -137,14 +137,15 @@ export default function Orcamento() {
       // Mostra o passo 6 (mensagem de sucesso)
       setStep(6);
       
-      // Aguarda um pouco para leitura, depois inicia a transição de corte
+      // Aguarda um pouco para leitura, depois inicia a transição de fade out
       setTimeout(() => {
         setIsClosing(true);
         
-        // Aguarda o tempo da animação (1s) para redirecionar
+        // Aguarda o tempo da animação (800ms) para redirecionar
         setTimeout(() => {
+          sessionStorage.setItem('from_success', 'true');
           router.push('/');
-        }, 1000);
+        }, 800);
       }, 2000);
       
     } catch (error) {

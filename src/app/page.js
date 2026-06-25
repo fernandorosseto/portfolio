@@ -256,6 +256,19 @@ export default function Home() {
   const router = useRouter();
   const [clickedBtn, setClickedBtn] = useState(null);
   const [isSucking, setIsSucking] = useState(false);
+  const [contentVisible, setContentVisible] = useState(false);
+
+  useEffect(() => {
+    const fromSuccess = sessionStorage.getItem('from_success') === 'true';
+    if (fromSuccess) {
+      sessionStorage.removeItem('from_success');
+      setTimeout(() => {
+        setContentVisible(true);
+      }, 1500); // Aguarda 1.5s para as folhas aparecerem antes de mostrar o texto
+    } else {
+      setContentVisible(true);
+    }
+  }, []);
 
   const handleNav = (e, path, id) => {
     e.preventDefault();
@@ -288,12 +301,12 @@ export default function Home() {
       </div>
 
       {/* Conteúdo sobreposto */}
-      <div className={`content-overlay ${isSucking ? 'fade-out' : ''}`}>
+      <div className={`content-overlay ${isSucking ? 'fade-out' : ''}`} style={{ opacity: contentVisible ? 1 : 0, transition: 'opacity 1s ease-in-out' }}>
         <div className="content-wrapper">
-          <h1 className="card-title">
-            <TypewriterText text="Fernando Rosseto" />
+          <h1 className="card-title" style={{ minHeight: '1.2em' }}>
+            {contentVisible && <TypewriterText text="Fernando Rosseto" />}
           </h1>
-          <FlickerSubtitle text="Desenvolvo soluções." />
+          {contentVisible && <FlickerSubtitle text="Desenvolvo soluções." />}
 
           <div className="button-group" style={{ gap: "2.5rem", marginTop: "12vh" }}>
             <a 
