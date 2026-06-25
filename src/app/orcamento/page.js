@@ -263,7 +263,7 @@ export default function Orcamento() {
               <span className="step-counter">3 de 5</span>
               <h1 className="step-question" style={{ whiteSpace: 'normal', fontSize: '2rem' }}>Detalhes do Projeto</h1>
               
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', width: '100%', color: 'var(--text-secondary)' }}>
+              <div className="details-grid" style={{ width: '100%', color: 'var(--text-secondary)' }}>
                 
                 {/* Card 1: Estilo */}
                 <TiltCard delay={0}>
