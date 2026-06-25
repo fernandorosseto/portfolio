@@ -1013,4 +1013,10 @@ html, body {
   .details-grid {
     grid-template-columns: 1fr;
   }
+  
+  .orcamento-card {
+    aspect-ratio: auto;
+    min-height: 200px;
+    padding: 1.5rem;
+  }
 }
