@@ -823,6 +823,7 @@ html, body {
 
 .option-btn {
   scroll-snap-align: center;
+  scroll-snap-stop: always; /* Impede pular vários itens no scroll do mouse */
   background: transparent;
   border: none;
   padding: 1rem;
@@ -868,11 +869,11 @@ html, body {
 }
 
 .carousel-nav-btn.up {
-  top: -30px;
+  top: 0px; /* Ajustado para não sair do container */
 }
 
 .carousel-nav-btn.down {
-  bottom: -30px;
+  bottom: 0px; /* Ajustado para não sair do container */
 }
 
 .fade-in-up {
