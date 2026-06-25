@@ -689,6 +689,20 @@ html, body {
   flex-direction: column;
 }
 
+.orcamento-container.closing {
+  animation: irisClose 1s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
+  pointer-events: none;
+}
+
+@keyframes irisClose {
+  0% {
+    clip-path: circle(150% at 50% 50%);
+  }
+  100% {
+    clip-path: circle(0% at 50% 50%);
+  }
+}
+
 .orcamento-nav {
   width: 100%;
   padding: 1.5rem 2rem;

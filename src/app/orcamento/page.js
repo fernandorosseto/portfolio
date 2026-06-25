@@ -1,7 +1,8 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { useRouter } from 'next/navigation';
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { HexColorPicker } from "react-colorful";
 
 const optionsStep1 = [
@@ -69,8 +70,125 @@ function TiltCard({ children, delay = 0 }) {
 }
 
 export default function Orcamento() {
+  const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [step, setStep] = useState(1);
+  const [isClosing, setIsClosing] = useState(false);
+  const [formData, setFormData] = useState({ 
+    objetivo: '', 
+    descricao: '',
+    estilo: '',
+    logo: null,
+    possuiDominio: null,
+    dominioUrl: '',
+    tema: '',
+    corPrincipal: '#000000',
+    corSecundaria: '#ffffff',
+    nome: '',
+    contato: ''
+  });
+  const [activeColorPicker, setActiveColorPicker] = useState(null);
+  
+  const carouselRef = useRef(null);
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    setMounted(true);
+    // Initial scroll sync
+    if (carouselRef.current) {
+      setScrollY(carouselRef.current.scrollTop);
+    }
+  }, []);
+
+  const handleScroll = (e) => {
+    setScrollY(e.target.scrollTop);
+  };
+
+  const scrollUp = () => {
+    if (carouselRef.current) carouselRef.current.scrollBy({ top: -80, behavior: 'smooth' });
+  };
+
+  const scrollDown = () => {
+    if (carouselRef.current) carouselRef.current.scrollBy({ top: 80, behavior: 'smooth' });
+  };
+
+  const handleSelect = (id) => {
+'use client';
+import { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { HexColorPicker } from "react-colorful";
+
+const optionsStep1 = [
+  { id: 'leads', label: 'Captar leads e contatos' },
+  { id: 'vendas', label: 'Vender um produto online' },
+  { id: 'institucional', label: 'Apresentar minha empresa' },
+  { id: 'sistema', label: 'Criar um sistema customizado' }
+];
+
+function TiltCard({ children, delay = 0 }) {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const mouseXSpring = useSpring(x, { stiffness: 300, damping: 30 });
+  const mouseYSpring = useSpring(y, { stiffness: 300, damping: 30 });
+
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["10deg", "-10deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-10deg", "10deg"]);
+
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    const xPct = mouseX / width - 0.5;
+    const yPct = mouseY / height - 0.5;
+    x.set(xPct);
+    y.set(yPct);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  return (
+    <motion.div
+      className="orcamento-card"
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay }}
+      style={{
+        rotateX,
+        rotateY,
+        transformStyle: "preserve-3d",
+        perspective: 1000
+      }}
+    >
+      <motion.div
+        animate={{ y: [0, -6, 0] }}
+        transition={{
+          duration: 3 + Math.random() * 2,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+        style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', gap: '1rem', transform: 'translateZ(20px)' }}
+      >
+        {children}
+      </motion.div>
+    </motion.div>
+  );
+}
+
+export default function Orcamento() {
+  const router = useRouter();
+  const [mounted, setMounted] = useState(false);
+  const [step, setStep] = useState(1);
+  const [isClosing, setIsClosing] = useState(false);
   const [formData, setFormData] = useState({ 
     objetivo: '', 
     descricao: '',
@@ -116,26 +234,60 @@ export default function Orcamento() {
     }, 400);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // Aqui vai a lógica de enviar para o WhatsApp ou API
-    console.log("Formulário Enviado:", formData);
-    alert("Solicitação enviada com sucesso!");
-    // Redirecionar para home ou tela de sucesso
+    console.log("Enviando Formulário para API:", formData);
+    
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      
+      if (!res.ok) {
+        throw new Error('Falha ao enviar e-mail');
+      }
+      
+      // Mostra o passo 6 (mensagem de sucesso)
+      setStep(6);
+      
+      // Aguarda um pouco para leitura, depois inicia a transição de corte
+      setTimeout(() => {
+        setIsClosing(true);
+        
+        // Aguarda o tempo da animação (1s) para redirecionar
+        setTimeout(() => {
+          router.push('/');
+        }, 1000);
+      }, 2000);
+      
+    } catch (error) {
+      console.error(error);
+      alert('Houve um problema ao enviar o orçamento. Por favor, tente novamente.');
+    }
   };
 
   if (!mounted) return null;
 
   return (
-    <main className="orcamento-container">
+    <main className={`orcamento-container ${isClosing ? 'closing' : ''}`}>
       <nav className="orcamento-nav">
         <Link href="/" className="back-button">← Voltar</Link>
       </nav>
       
       <div className="interactive-form-wrapper">
-        <div className="form-step-container">
+        <div className="form-step-container" style={{ overflowX: 'hidden' }}>
+          <AnimatePresence mode="wait">
           
           {step === 1 && (
-            <div className="step-content fade-in-up">
+            <motion.div 
+              key="step1"
+              initial={{ opacity: 0, x: 100 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -100 }}
+              transition={{ duration: 0.4, ease: "easeInOut" }}
+              className="step-content">
               <span className="step-counter">1 de 5</span>
               <h1 className="step-question">Qual o principal objetivo do seu projeto?</h1>
               
@@ -176,11 +328,17 @@ export default function Orcamento() {
 
                 <button className="carousel-nav-btn down" onClick={scrollDown}>▼</button>
               </div>
-            </div>
+            </motion.div>
           )}
 
           {step === 2 && (
-            <div className="step-content fade-in-up">
+            <motion.div 
+              key="step2"
+              initial={{ opacity: 0, x: 100 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -100 }}
+              transition={{ duration: 0.4, ease: "easeInOut" }}
+              className="step-content">
               <span className="step-counter">2 de 5</span>
               <h1 className="step-question">Em poucas palavras, como você descreveria o seu negócio ou ideia?</h1>
               
@@ -205,11 +363,17 @@ export default function Orcamento() {
                   Continuar
                 </button>
               </div>
-            </div>
+            </motion.div>
           )}
 
           {step === 3 && (
-            <div className="step-content fade-in-up" style={{ width: '100%', maxWidth: '800px' }}>
+            <motion.div 
+              key="step3"
+              initial={{ opacity: 0, x: 100 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -100 }}
+              transition={{ duration: 0.4, ease: "easeInOut" }}
+              className="step-content" style={{ width: '100%', maxWidth: '800px' }}>
               <span className="step-counter">3 de 5</span>
               <h1 className="step-question" style={{ whiteSpace: 'normal', fontSize: '2rem' }}>Detalhes do Projeto</h1>
               
@@ -382,7 +546,7 @@ export default function Orcamento() {
                           ))}
                         </div>
                       </div>
-                    )}
+          )}
 
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
                       <label style={{ fontSize: '0.9rem', fontWeight: 600 }}>Principal</label>
@@ -418,11 +582,17 @@ export default function Orcamento() {
                   Continuar
                 </button>
               </div>
-            </div>
+            </motion.div>
           )}
 
           {step === 4 && (
-            <div className="step-content fade-in-up">
+            <motion.div 
+              key="step4"
+              initial={{ opacity: 0, x: 100 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -100 }}
+              transition={{ duration: 0.4, ease: "easeInOut" }}
+              className="step-content">
               <span className="step-counter">4 de 5</span>
               <h1 className="step-question">Como você gosta de ser chamado?</h1>
               
@@ -448,11 +618,17 @@ export default function Orcamento() {
                   Continuar
                 </button>
               </div>
-            </div>
+            </motion.div>
           )}
 
           {step === 5 && (
-            <div className="step-content fade-in-up">
+            <motion.div 
+              key="step5"
+              initial={{ opacity: 0, x: 100 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -100 }}
+              transition={{ duration: 0.4, ease: "easeInOut" }}
+              className="step-content">
               <span className="step-counter">5 de 5</span>
               <h1 className="step-question">Qual o seu melhor contato (WhatsApp)?</h1>
               
@@ -460,9 +636,12 @@ export default function Orcamento() {
                 <input 
                   type="tel"
                   className="open-text-input single-line" 
-                  placeholder="(00) 00000-0000"
+                  placeholder="Apenas números (Ex: 11999999999)"
                   value={formData.contato}
-                  onChange={(e) => setFormData({ ...formData, contato: e.target.value })}
+                  onChange={(e) => {
+                    const onlyNumbers = e.target.value.replace(/\D/g, '');
+                    setFormData({ ...formData, contato: onlyNumbers });
+                  }}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       e.preventDefault();
@@ -478,9 +657,37 @@ export default function Orcamento() {
                   Enviar Solicitação
                 </button>
               </div>
-            </div>
+            </motion.div>
           )}
 
+          {step === 6 && (
+            <motion.div 
+              key="step6"
+              initial={{ opacity: 0, x: 100 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -100 }}
+              transition={{ duration: 0.4, ease: "easeInOut" }}
+              className="step-content" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '50vh' }}>
+              <h1 className="step-question" style={{ color: 'var(--color-accent)', marginBottom: '1rem' }}>Mensagem Encaminhada!</h1>
+              <p style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', textAlign: 'center', maxWidth: '400px' }}>
+              className="step-content" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '50vh' }}>
+              <h1 className="step-question" style={{ color: 'var(--color-accent)', marginBottom: '1rem' }}>Mensagem Encaminhada!</h1>
+              <p style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', textAlign: 'center', maxWidth: '400px' }}>
+                Entrarei em contato.
+              </p>
+              <div style={{ marginTop: '3rem', opacity: 0.6, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <div style={{ width: '16px', height: '16px', border: '2px solid var(--text-secondary)', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
+                Voltando para a página inicial...
+              </div>
+              <style jsx>{`
+                @keyframes spin {
+                  to { transform: rotate(360deg); }
+                }
+              `}</style>
+            </motion.div>
+          )}
+
+          </AnimatePresence>
         </div>
       </div>
     </main>
