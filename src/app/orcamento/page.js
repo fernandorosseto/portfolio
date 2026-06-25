@@ -105,11 +105,11 @@ export default function Orcamento() {
   };
 
   const scrollUp = () => {
-    if (carouselRef.current) carouselRef.current.scrollBy({ top: -80, behavior: 'smooth' });
+    if (carouselRef.current) carouselRef.current.scrollBy({ top: -60, behavior: 'smooth' });
   };
 
   const scrollDown = () => {
-    if (carouselRef.current) carouselRef.current.scrollBy({ top: 80, behavior: 'smooth' });
+    if (carouselRef.current) carouselRef.current.scrollBy({ top: 60, behavior: 'smooth' });
   };
 
   const handleSelect = (id) => {
@@ -182,7 +182,7 @@ export default function Orcamento() {
                 <div className="carousel-viewport" ref={carouselRef} onScroll={handleScroll}>
                   <div className="options-list">
                     {optionsStep1.map((opt, index) => {
-                      const itemHeight = 80;
+                      const itemHeight = 60;
                       const offset = scrollY - (index * itemHeight);
                       const normalizedOffset = offset / itemHeight;
                       

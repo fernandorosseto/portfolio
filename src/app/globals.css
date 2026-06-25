@@ -806,7 +806,7 @@ html, body {
   /* Máscara de fade no topo e fundo */
   -webkit-mask-image: linear-gradient(to bottom, transparent, black 30%, black 70%, transparent);
   mask-image: linear-gradient(to bottom, transparent, black 30%, black 70%, transparent);
-  padding: 60px 0; /* Padding ajustado para a nova altura de 200px */
+  padding: 70px 0; /* Padding ajustado para a nova altura de 200px */
   perspective: 1000px;
 }
 
@@ -832,7 +832,7 @@ html, body {
   color: var(--text-secondary);
   text-align: center;
   cursor: pointer;
-  min-height: 80px;
+  min-height: 60px; /* Reduzido de 80 para 60 para aproximar mais as opções */
   display: flex;
   align-items: center;
   justify-content: center;
