@@ -740,9 +740,7 @@ html, body {
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-top: auto;
-  margin-bottom: auto;
-  padding-bottom: 3rem;
+  padding: 2rem 0 6rem 0;
 }
 
 .step-content {
