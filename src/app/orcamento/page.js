@@ -670,9 +670,6 @@ export default function Orcamento() {
               className="step-content" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '50vh' }}>
               <h1 className="step-question" style={{ color: 'var(--color-accent)', marginBottom: '1rem' }}>Mensagem Encaminhada!</h1>
               <p style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', textAlign: 'center', maxWidth: '400px' }}>
-              className="step-content" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '50vh' }}>
-              <h1 className="step-question" style={{ color: 'var(--color-accent)', marginBottom: '1rem' }}>Mensagem Encaminhada!</h1>
-              <p style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', textAlign: 'center', maxWidth: '400px' }}>
                 Entrarei em contato.
               </p>
               <div style={{ marginTop: '3rem', opacity: 0.6, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
