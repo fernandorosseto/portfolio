@@ -257,12 +257,15 @@ export default function Home() {
   const [clickedBtn, setClickedBtn] = useState(null);
   const [isSucking, setIsSucking] = useState(false);
   const [contentVisible, setContentVisible] = useState(false);
-  const [bgWhite, setBgWhite] = useState(false);
+  const [bgWhite, setBgWhite] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return sessionStorage.getItem('from_success') === 'true';
+    }
+    return false;
+  });
 
   useEffect(() => {
-    const fromSuccess = sessionStorage.getItem('from_success') === 'true';
-    if (fromSuccess) {
-      setBgWhite(true);
+    if (bgWhite) {
       sessionStorage.removeItem('from_success');
       setTimeout(() => {
         setContentVisible(true);
@@ -271,7 +274,7 @@ export default function Home() {
     } else {
       setContentVisible(true);
     }
-  }, []);
+  }, [bgWhite]);
 
   const handleNav = (e, path, id) => {
     e.preventDefault();
