@@ -1,8 +1,8 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "Criação de Sites Premium & Briefing Interativo",
-  description: "Soluções digitais premium sob medida. Conheça meu portfólio ou envie um briefing detalhado do seu projeto online.",
+  title: "Criação de soluções",
+  description: "Soluções digitais sob medida. Conheça meu portfólio e envie um briefing detalhado do seu projeto .",
 };
 
 export default function RootLayout({ children }) {
