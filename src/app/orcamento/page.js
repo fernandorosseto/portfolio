@@ -3,7 +3,12 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { HexColorPicker } from "react-colorful";
+import dynamic from 'next/dynamic';
+
+const HexColorPicker = dynamic(() => import('react-colorful').then(mod => mod.HexColorPicker), {
+  ssr: false,
+  loading: () => <div style={{ width: '200px', height: '200px', backgroundColor: 'rgba(18,24,36,0.05)', borderRadius: '12px' }} />
+});
 
 const optionsStep1 = [
   { id: 'leads', label: 'Captar leads e contatos' },

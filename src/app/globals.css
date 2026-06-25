@@ -1,14 +1,12 @@
 /* Globals.css - Estilo Minimalista e Premium em Vanilla CSS */
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
-
 :root {
   --bg-dark-lead: #6c7a8f; 
   --bg-ice-white: #ffffff;
   --text-primary: #ffffff;
   --text-secondary: #3a475e;
   --color-accent: #d97706;
-  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-sans: var(--font-sans-next), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   
   /* Spring easing for the Blob Hover Effect */
   /* Credit: Temani Afif - https://codepen.io/t_afif/pen/PwwJgyr */
@@ -1012,4 +1010,20 @@ html, body {
     min-height: 200px;
     padding: 1.5rem;
   }
+}
+
+/* Caret de digitação otimizado via CSS para evitar framer-motion na Home */
+@keyframes typewriter-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.typewriter-caret {
+  display: inline-block;
+  width: 4px;
+  background-color: #121824;
+  margin-left: 4px;
+  vertical-align: baseline;
+  height: 0.9em;
+  animation: typewriter-blink 0.8s infinite steps(1);
 }
