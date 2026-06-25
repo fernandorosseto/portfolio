@@ -10,6 +10,20 @@ const HexColorPicker = dynamic(() => import('react-colorful').then(mod => mod.He
   loading: () => <div style={{ width: '200px', height: '200px', backgroundColor: 'rgba(18,24,36,0.05)', borderRadius: '12px' }} />
 });
 
+// Wrapper para evitar re-renders excessivos na árvore principal durante o arraste da cor
+function DebouncedColorPicker({ color, onChange }) {
+  const [value, setValue] = useState(color);
+  
+  useEffect(() => { setValue(color); }, [color]);
+
+  useEffect(() => {
+    const handler = setTimeout(() => onChange(value), 50); // Debounce de 50ms para manter a fluidez do picker sem travar a interface
+    return () => clearTimeout(handler);
+  }, [value]); // Removido onChange da dependência para evitar loops
+
+  return <HexColorPicker color={value} onChange={setValue} />;
+}
+
 const optionsStep1 = [
   { id: 'leads', label: 'Captar leads e contatos' },
   { id: 'vendas', label: 'Vender um produto online' },
@@ -377,23 +391,48 @@ export default function Orcamento() {
                 <TiltCard delay={0.3}>
                   <h3 style={{ fontSize: '1.2rem', fontWeight: 700 }}>Identidade Visual</h3>
                   
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', width: '100%' }}>
-                    <label style={{ fontSize: '0.9rem', fontWeight: 600 }}>Tema de preferência</label>
-                    <div style={{ display: 'flex', gap: '1.5rem' }}>
-                      <button 
-                        onClick={() => setFormData({...formData, tema: 'Claro'})} 
-                        className={`btn-text ${formData.tema === 'Claro' ? 'clicked' : ''}`}
-                        style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '1.1rem' }}
-                      >Claro</button>
-                      <button 
-                        onClick={() => setFormData({...formData, tema: 'Escuro'})} 
-                        className={`btn-text ${formData.tema === 'Escuro' ? 'clicked' : ''}`}
-                        style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '1.1rem' }}
-                      >Escuro</button>
+                  <div style={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '2rem', marginTop: '1rem' }}>
+                    
+                    {/* Seção 1: Tema */}
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+                      <label style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-secondary)' }}>1. Tema Base</label>
+                      <div style={{ display: 'flex', background: 'rgba(18,24,36,0.04)', padding: '0.4rem', borderRadius: '12px', gap: '0.5rem' }}>
+                        <button 
+                          onClick={() => setFormData({...formData, tema: 'Claro'})} 
+                          style={{ 
+                            padding: '0.6rem 2rem', borderRadius: '8px', border: 'none', cursor: 'pointer', fontSize: '1rem', fontWeight: 600,
+                            background: formData.tema === 'Claro' ? '#ffffff' : 'transparent',
+                            color: formData.tema === 'Claro' ? '#121824' : 'var(--text-secondary)',
+                            boxShadow: formData.tema === 'Claro' ? '0 4px 12px rgba(0,0,0,0.05)' : 'none',
+                            transition: 'all 0.3s ease'
+                          }}
+                        >
+                          Claro
+                        </button>
+                        <button 
+                          onClick={() => setFormData({...formData, tema: 'Escuro'})} 
+                          style={{ 
+                            padding: '0.6rem 2rem', borderRadius: '8px', border: 'none', cursor: 'pointer', fontSize: '1rem', fontWeight: 600,
+                            background: formData.tema === 'Escuro' ? '#121824' : 'transparent',
+                            color: formData.tema === 'Escuro' ? '#ffffff' : 'var(--text-secondary)',
+                            boxShadow: formData.tema === 'Escuro' ? '0 4px 12px rgba(0,0,0,0.1)' : 'none',
+                            transition: 'all 0.3s ease'
+                          }}
+                        >
+                          Escuro
+                        </button>
+                      </div>
                     </div>
-                  </div>
 
-                  <div style={{ display: 'flex', gap: '2rem', marginTop: '1rem', position: 'relative' }}>
+                    {/* Divisor */}
+                    <div style={{ width: '100%', height: '1px', background: 'rgba(18,24,36,0.08)' }} />
+
+                    {/* Seção 2: Cores */}
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+                      <label style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-secondary)' }}>2. Paleta de Cores</label>
+                      <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', opacity: 0.7 }}>Clique nos círculos para personalizar</span>
+                      
+                      <div style={{ display: 'flex', gap: '2.5rem', marginTop: '1rem', position: 'relative' }}>
                     
                     {/* Popover Color Picker */}
                     {activeColorPicker && (
@@ -402,29 +441,30 @@ export default function Orcamento() {
                         bottom: '120%',
                         left: activeColorPicker === 'principal' ? '0' : '40%',
                         backgroundColor: '#fff',
-                        padding: '1rem',
-                        borderRadius: '12px',
+                        padding: '2.5rem 1.2rem 1.2rem 1.2rem', // Mais espaço no topo para o botão X
+                        borderRadius: '16px',
                         boxShadow: '0 10px 40px rgba(18, 24, 36, 0.2)',
                         zIndex: 10,
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
-                        gap: '1rem'
+                        gap: '0.8rem' // Diminui o gap para não ficar alto demais
                       }}>
+                        {/* Botão fechar com área de clique maior */}
                         <div 
-                          style={{ position: 'absolute', top: 10, right: 10, cursor: 'pointer', fontSize: '1.2rem', color: 'var(--text-secondary)' }}
+                          style={{ position: 'absolute', top: 0, right: 0, width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '1.2rem', color: 'var(--text-secondary)' }}
                           onClick={() => setActiveColorPicker(null)}
                         >
                           ✕
                         </div>
-                        <HexColorPicker 
+                        <DebouncedColorPicker 
                           color={activeColorPicker === 'principal' ? formData.corPrincipal : formData.corSecundaria} 
                           onChange={(newColor) => {
                             if (activeColorPicker === 'principal') setFormData({...formData, corPrincipal: newColor});
                             else setFormData({...formData, corSecundaria: newColor});
                           }} 
                         />
-                        <div style={{ display: 'flex', gap: '0.5rem', width: '100%' }}>
+                        <div style={{ display: 'flex', gap: '0.6rem', width: '100%', justifyContent: 'center', marginTop: '0.5rem' }}>
                           {['#000000', '#ffffff', '#d4af37', '#1e3a8a', '#10b981', '#f43f5e'].map(preset => (
                             <button 
                               key={preset}
@@ -432,33 +472,46 @@ export default function Orcamento() {
                                 if (activeColorPicker === 'principal') setFormData({...formData, corPrincipal: preset});
                                 else setFormData({...formData, corSecundaria: preset});
                               }}
-                              style={{ width: '20px', height: '20px', borderRadius: '50%', background: preset, border: '1px solid rgba(0,0,0,0.1)', cursor: 'pointer' }}
+                              style={{ width: '24px', height: '24px', borderRadius: '50%', background: preset, border: '1px solid rgba(0,0,0,0.1)', cursor: 'pointer' }}
                             />
                           ))}
                         </div>
                       </div>
-          )}
+                    )}
 
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
-                      <label style={{ fontSize: '0.9rem', fontWeight: 600 }}>Principal</label>
+                    {/* Botão Principal com área expandida */}
+                    <div 
+                      onClick={() => setActiveColorPicker(activeColorPicker === 'principal' ? null : 'principal')}
+                      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.6rem', cursor: 'pointer', padding: '0.5rem', borderRadius: '8px', transition: 'background 0.2s' }}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(18,24,36,0.03)'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                    >
+                      <label style={{ fontSize: '0.9rem', fontWeight: 600, pointerEvents: 'none' }}>Principal</label>
                       <button 
-                        onClick={() => setActiveColorPicker(activeColorPicker === 'principal' ? null : 'principal')}
                         style={{ 
-                          width: '36px', height: '36px', borderRadius: '50%', 
-                          backgroundColor: formData.corPrincipal, border: '2px solid rgba(18,24,36,0.1)', cursor: 'pointer' 
+                          width: '44px', height: '44px', borderRadius: '50%', 
+                          backgroundColor: formData.corPrincipal, border: '2px solid rgba(18,24,36,0.1)', pointerEvents: 'none'
                         }}
                       />
                     </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
-                      <label style={{ fontSize: '0.9rem', fontWeight: 600 }}>Secundária</label>
+
+                    {/* Botão Secundário com área expandida */}
+                    <div 
+                      onClick={() => setActiveColorPicker(activeColorPicker === 'secundaria' ? null : 'secundaria')}
+                      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.6rem', cursor: 'pointer', padding: '0.5rem', borderRadius: '8px', transition: 'background 0.2s' }}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(18,24,36,0.03)'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                    >
+                      <label style={{ fontSize: '0.9rem', fontWeight: 600, pointerEvents: 'none' }}>Secundária</label>
                       <button 
-                        onClick={() => setActiveColorPicker(activeColorPicker === 'secundaria' ? null : 'secundaria')}
                         style={{ 
-                          width: '36px', height: '36px', borderRadius: '50%', 
-                          backgroundColor: formData.corSecundaria, border: '2px solid rgba(18,24,36,0.1)', cursor: 'pointer' 
+                          width: '44px', height: '44px', borderRadius: '50%', 
+                          backgroundColor: formData.corSecundaria, border: '2px solid rgba(18,24,36,0.1)', pointerEvents: 'none'
                         }}
                       />
                     </div>
+                  </div>
+                  </div>
                   </div>
                 </TiltCard>
 
