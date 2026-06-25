@@ -257,14 +257,17 @@ export default function Home() {
   const [clickedBtn, setClickedBtn] = useState(null);
   const [isSucking, setIsSucking] = useState(false);
   const [contentVisible, setContentVisible] = useState(false);
+  const [bgWhite, setBgWhite] = useState(false);
 
   useEffect(() => {
     const fromSuccess = sessionStorage.getItem('from_success') === 'true';
     if (fromSuccess) {
+      setBgWhite(true);
       sessionStorage.removeItem('from_success');
       setTimeout(() => {
         setContentVisible(true);
-      }, 1500); // Aguarda 1.5s para as folhas aparecerem antes de mostrar o texto
+        setBgWhite(false);
+      }, 1500); // Aguarda 1.5s para as folhas aparecerem antes de mostrar o texto e escurecer o fundo
     } else {
       setContentVisible(true);
     }
@@ -290,10 +293,18 @@ export default function Home() {
     <main className="main-container">
       <div className="glow-effect" />
       
+      {/* Fundo dinâmico para a transição de sucesso */}
+      <div 
+        style={{
+          position: "absolute", top: 0, left: 0, width: "100%", height: "100%", zIndex: 4, 
+          backgroundColor: bgWhite ? '#f9fbfd' : '#6c7a8f',
+          transition: 'background-color 1.5s ease-in-out'
+        }}
+      />
+
       {/* Grid de Pedaços de Papel Renderizados em GPU via WebGL */}
       <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", zIndex: 5 }}>
         <Canvas flat camera={{ position: [0, 0, 10], fov: 50 }} dpr={[1, 2]}>
-          <color attach="background" args={["#6c7a8f"]} />
           <ambientLight intensity={0.65} />
           <directionalLight position={[5, 10, 8]} intensity={1.5} />
           <WebGLGrid isSucking={isSucking} />
