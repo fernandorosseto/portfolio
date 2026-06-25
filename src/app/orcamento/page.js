@@ -558,15 +558,6 @@ export default function Orcamento() {
               <p style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', textAlign: 'center', maxWidth: '400px' }}>
                 Entrarei em contato.
               </p>
-              <div style={{ marginTop: '3rem', opacity: 0.6, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <div style={{ width: '16px', height: '16px', border: '2px solid var(--text-secondary)', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
-                Voltando para a página inicial...
-              </div>
-              <style jsx>{`
-                @keyframes spin {
-                  to { transform: rotate(360deg); }
-                }
-              `}</style>
             </motion.div>
           )}
 
