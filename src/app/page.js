@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { useRouter } from 'next/navigation';
+import { useLanguage } from "./context/LanguageContext";
+import LanguageToggle from "./components/LanguageToggle";
 
 // Importação dinâmica do Canvas WebGL (Three.js/Fiber) para não inflar o bundle inicial
 const WebGLCanvas = dynamic(() => import('./components/WebGLCanvas'), { 
@@ -63,6 +65,7 @@ function FlickerSubtitle({ text }) {
 }
 
 export default function Home() {
+  const { t } = useLanguage();
   const router = useRouter();
   const [clickedBtn, setClickedBtn] = useState(null);
   const [isSucking, setIsSucking] = useState(false);
@@ -104,6 +107,9 @@ export default function Home() {
 
   return (
     <main className="main-container">
+      <div style={{ position: "absolute", top: "1.5rem", right: "2rem", zIndex: 50 }}>
+        <LanguageToggle />
+      </div>
       <div className="glow-effect" />
       
       {/* Fundo dinâmico para a transição de sucesso */}
@@ -126,7 +132,7 @@ export default function Home() {
           <h1 className="card-title" style={{ minHeight: '1.2em' }}>
             {contentVisible && <TypewriterText text="Fernando Rosseto" />}
           </h1>
-          {contentVisible && <FlickerSubtitle text="Desenvolvo soluções." />}
+          {contentVisible && <FlickerSubtitle text={t.subtitle} />}
 
           <div className="button-group" style={{ gap: "2.5rem", marginTop: "12vh" }}>
             <a 
@@ -134,7 +140,7 @@ export default function Home() {
               className={`btn-text ${clickedBtn === 'portfolio' ? 'clicked' : ''}`}
               onClick={(e) => handleNav(e, '/portfolio', 'portfolio')}
             >
-              Portfólios
+              {t.portfolios}
             </a>
             <div style={{ position: 'relative' }}>
               <div className="floating-arrows">
@@ -159,7 +165,7 @@ export default function Home() {
                 className={`btn-highlight ${clickedBtn === 'orcamento' ? 'clicked' : ''}`}
                 onClick={(e) => handleNav(e, '/orcamento', 'orcamento')}
               >
-                Clique Aqui
+                {t.clickHere}
               </a>
             </div>
           </div>

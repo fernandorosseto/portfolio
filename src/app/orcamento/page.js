@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import dynamic from 'next/dynamic';
+import { useLanguage } from '../context/LanguageContext';
+import LanguageToggle from '../components/LanguageToggle';
 
 const HexColorPicker = dynamic(() => import('react-colorful').then(mod => mod.HexColorPicker), {
   ssr: false,
@@ -24,12 +26,7 @@ function DebouncedColorPicker({ color, onChange }) {
   return <HexColorPicker color={value} onChange={setValue} />;
 }
 
-const optionsStep1 = [
-  { id: 'leads', label: 'Captar leads e contatos' },
-  { id: 'vendas', label: 'Vender um produto online' },
-  { id: 'institucional', label: 'Apresentar minha empresa' },
-  { id: 'sistema', label: 'Criar um sistema customizado' }
-];
+// optionsStep1 is defined dynamically inside Orcamento component using translations
 
 function TiltCard({ children, delay = 0 }) {
   const x = useMotionValue(0);
@@ -89,6 +86,7 @@ function TiltCard({ children, delay = 0 }) {
 }
 
 export default function Orcamento() {
+  const { t } = useLanguage();
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [step, setStep] = useState(1);
@@ -107,6 +105,19 @@ export default function Orcamento() {
     contato: ''
   });
   const [activeColorPicker, setActiveColorPicker] = useState(null);
+
+  const optionsStep1 = [
+    { id: 'leads', label: t.opt1_leads },
+    { id: 'vendas', label: t.opt1_vendas },
+    { id: 'institucional', label: t.opt1_institucional },
+    { id: 'sistema', label: t.opt1_sistema }
+  ];
+
+  const stylesOptions = [
+    { id: 'Minimalista', label: t.styleMinimalist },
+    { id: 'Retrô', label: t.styleRetro },
+    { id: 'Corporativo', label: t.styleCorporate }
+  ];
   
   const carouselRef = useRef(null);
   const [scrollY, setScrollY] = useState(0);
@@ -169,7 +180,7 @@ export default function Orcamento() {
       
     } catch (error) {
       console.error(error);
-      alert('Houve um problema ao enviar o orçamento. Por favor, tente novamente.');
+      alert(t.alertError);
     }
   };
 
@@ -178,7 +189,8 @@ export default function Orcamento() {
   return (
     <main className={`orcamento-container ${isClosing ? 'closing' : ''}`}>
       <nav className="orcamento-nav">
-        <Link href="/" className="back-button">← Voltar</Link>
+        <Link href="/" className="back-button">{t.back}</Link>
+        <LanguageToggle />
       </nav>
       
       <div className="interactive-form-wrapper">
@@ -193,8 +205,8 @@ export default function Orcamento() {
               exit={{ opacity: 0, x: -100 }}
               transition={{ duration: 0.4, ease: "easeInOut" }}
               className="step-content">
-              <span className="step-counter">1 de 5</span>
-              <h1 className="step-question">Qual o principal objetivo do seu projeto?</h1>
+              <span className="step-counter">{t.stepCounter(1, 5)}</span>
+              <h1 className="step-question">{t.q1}</h1>
               
               <div className="carousel-container">
                 <button className="carousel-nav-btn up" onClick={scrollUp}>▲</button>
@@ -244,13 +256,13 @@ export default function Orcamento() {
               exit={{ opacity: 0, x: -100 }}
               transition={{ duration: 0.4, ease: "easeInOut" }}
               className="step-content">
-              <span className="step-counter">2 de 5</span>
-              <h1 className="step-question">Em poucas palavras, como você descreveria o seu negócio ou ideia?</h1>
+              <span className="step-counter">{t.stepCounter(2, 5)}</span>
+              <h1 className="step-question">{t.q2}</h1>
               
               <div className="input-container">
                 <textarea 
                   className="open-text-input" 
-                  placeholder="Ex: Sou um arquiteto e preciso de um portfólio elegante..."
+                  placeholder={t.q2Placeholder}
                   value={formData.descricao}
                   onChange={(e) => setFormData({ ...formData, descricao: e.target.value })}
                   onKeyDown={(e) => {
@@ -265,7 +277,7 @@ export default function Orcamento() {
                   className={`btn-highlight btn-step-continuar ${formData.descricao.trim() !== '' ? 'visible' : ''}`}
                   onClick={() => setStep(3)}
                 >
-                  Continuar
+                  {t.continueBtn}
                 </button>
               </div>
             </motion.div>
@@ -279,20 +291,20 @@ export default function Orcamento() {
               exit={{ opacity: 0, x: -100 }}
               transition={{ duration: 0.4, ease: "easeInOut" }}
               className="step-content" style={{ width: '100%', maxWidth: '800px' }}>
-              <span className="step-counter">3 de 5</span>
-              <h1 className="step-question" style={{ whiteSpace: 'normal', fontSize: '2rem' }}>Detalhes do Projeto</h1>
+              <span className="step-counter">{t.stepCounter(3, 5)}</span>
+              <h1 className="step-question" style={{ whiteSpace: 'normal', fontSize: '2rem' }}>{t.q3}</h1>
               
               <div className="details-grid" style={{ width: '100%', color: 'var(--text-secondary)' }}>
                 
                 {/* Card 1: Estilo */}
                 <TiltCard delay={0}>
-                  <h3 style={{ fontSize: '1.2rem', fontWeight: 700 }}>Estilo</h3>
+                  <h3 style={{ fontSize: '1.2rem', fontWeight: 700 }}>{t.styleLabel}</h3>
                   <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-                    {['Minimalista', 'Retrô', 'Corporativo'].map(est => {
-                      const isSelected = formData.estilo === est;
+                    {stylesOptions.map(opt => {
+                      const isSelected = formData.estilo === opt.id;
                       let customStyle = { padding: '0.5rem 1rem', cursor: 'pointer', transition: 'all 0.2s', color: 'var(--text-secondary)' };
                       
-                      if (est === 'Minimalista') {
+                      if (opt.id === 'Minimalista') {
                         customStyle = {
                           ...customStyle,
                           fontFamily: 'var(--font-sans)',
@@ -303,7 +315,7 @@ export default function Orcamento() {
                           border: isSelected ? '1px solid var(--text-secondary)' : '1px solid rgba(18,24,36,0.1)',
                           borderRadius: '0'
                         };
-                      } else if (est === 'Retrô') {
+                      } else if (opt.id === 'Retrô') {
                         customStyle = {
                           ...customStyle,
                           fontFamily: '"Courier New", Courier, monospace',
@@ -314,7 +326,7 @@ export default function Orcamento() {
                           transform: isSelected ? 'translate(2px, 2px)' : 'none',
                           borderRadius: '0'
                         };
-                      } else if (est === 'Corporativo') {
+                      } else if (opt.id === 'Corporativo') {
                         customStyle = {
                           ...customStyle,
                           fontFamily: 'Arial, Helvetica, sans-serif',
@@ -329,17 +341,17 @@ export default function Orcamento() {
 
                       return (
                         <button 
-                          key={est} 
-                          onClick={() => setFormData({...formData, estilo: est})} 
+                          key={opt.id} 
+                          onClick={() => setFormData({...formData, estilo: opt.id})} 
                           style={customStyle}
                         >
-                          {est}
+                          {opt.label}
                         </button>
                       );
                     })}
                     <input 
                       type="text" 
-                      placeholder="Outro (digite)" 
+                      placeholder={t.styleOther} 
                       value={!['Minimalista', 'Retrô', 'Corporativo', ''].includes(formData.estilo) ? formData.estilo : ''}
                       onChange={(e) => setFormData({...formData, estilo: e.target.value})}
                       style={{ background: 'transparent', border: 'none', borderBottom: '1px solid rgba(18, 24, 36, 0.2)', padding: '0.5rem', outline: 'none', color: 'inherit', textAlign: 'center' }}
@@ -349,9 +361,9 @@ export default function Orcamento() {
 
                 {/* Card 2: Logo */}
                 <TiltCard delay={0.1}>
-                  <h3 style={{ fontSize: '1.2rem', fontWeight: 700 }}>Já possui logotipo?</h3>
+                  <h3 style={{ fontSize: '1.2rem', fontWeight: 700 }}>{t.logoLabel}</h3>
                   <label className="btn-highlight" style={{ cursor: 'pointer', padding: '0.5rem 1rem', display: 'inline-block', marginTop: '0.5rem' }}>
-                    {formData.logo ? 'Logotipo Anexado ✓' : 'Carregar Logo'}
+                    {formData.logo ? t.logoBtnAttached : t.logoBtnUpload}
                     <input 
                       type="file" 
                       accept="image/*" 
@@ -363,23 +375,23 @@ export default function Orcamento() {
 
                 {/* Card 3: Domínio */}
                 <TiltCard delay={0.2}>
-                  <h3 style={{ fontSize: '1.2rem', fontWeight: 700 }}>Já possui domínio?</h3>
+                  <h3 style={{ fontSize: '1.2rem', fontWeight: 700 }}>{t.domainLabel}</h3>
                   <div style={{ display: 'flex', gap: '1.5rem', marginTop: '0.5rem' }}>
                     <button 
                       onClick={() => setFormData({...formData, possuiDominio: true})} 
                       className={`btn-text ${formData.possuiDominio === true ? 'clicked' : ''}`}
                       style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '1.1rem' }}
-                    >Sim</button>
+                    >{t.domainYes}</button>
                     <button 
                       onClick={() => setFormData({...formData, possuiDominio: false, dominioUrl: ''})} 
                       className={`btn-text ${formData.possuiDominio === false ? 'clicked' : ''}`}
                       style={{ background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '1.1rem' }}
-                    >Não</button>
+                    >{t.domainNo}</button>
                   </div>
                   {formData.possuiDominio && (
                     <input 
                       type="text" 
-                      placeholder="Ex: www.meusite.com.br" 
+                      placeholder={t.domainPlaceholder} 
                       value={formData.dominioUrl} 
                       onChange={(e) => setFormData({...formData, dominioUrl: e.target.value})} 
                       style={{ background: 'transparent', border: 'none', borderBottom: '1px solid var(--color-accent)', padding: '0.5rem', outline: 'none', color: 'inherit', marginTop: '1rem', textAlign: 'center', width: '80%' }} 
@@ -389,13 +401,13 @@ export default function Orcamento() {
 
                 {/* Card 4: Tema e Cores (Agrupados) */}
                 <TiltCard delay={0.3}>
-                  <h3 style={{ fontSize: '1.2rem', fontWeight: 700 }}>Identidade Visual</h3>
+                  <h3 style={{ fontSize: '1.2rem', fontWeight: 700 }}>{t.identityLabel}</h3>
                   
                   <div style={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '2rem', marginTop: '1rem' }}>
                     
                     {/* Seção 1: Tema */}
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-                      <label style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-secondary)' }}>1. Tema Base</label>
+                      <label style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-secondary)' }}>{t.themeLabel}</label>
                       <div style={{ display: 'flex', background: 'rgba(18,24,36,0.04)', padding: '0.4rem', borderRadius: '12px', gap: '0.5rem' }}>
                         <button 
                           onClick={() => setFormData({...formData, tema: 'Claro'})} 
@@ -407,7 +419,7 @@ export default function Orcamento() {
                             transition: 'all 0.3s ease'
                           }}
                         >
-                          Claro
+                          {t.themeLight}
                         </button>
                         <button 
                           onClick={() => setFormData({...formData, tema: 'Escuro'})} 
@@ -419,7 +431,7 @@ export default function Orcamento() {
                             transition: 'all 0.3s ease'
                           }}
                         >
-                          Escuro
+                          {t.themeDark}
                         </button>
                       </div>
                     </div>
@@ -429,8 +441,8 @@ export default function Orcamento() {
 
                     {/* Seção 2: Cores */}
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
-                      <label style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-secondary)' }}>2. Paleta de Cores</label>
-                      <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', opacity: 0.7 }}>Clique nos círculos para personalizar</span>
+                      <label style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-secondary)' }}>{t.colorLabel}</label>
+                      <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', opacity: 0.7 }}>{t.colorSub}</span>
                       
                       <div style={{ display: 'flex', gap: '2.5rem', marginTop: '1rem', position: 'relative' }}>
                     
@@ -486,7 +498,7 @@ export default function Orcamento() {
                       onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(18,24,36,0.03)'}
                       onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                     >
-                      <label style={{ fontSize: '0.9rem', fontWeight: 600, pointerEvents: 'none' }}>Principal</label>
+                      <label style={{ fontSize: '0.9rem', fontWeight: 600, pointerEvents: 'none' }}>{t.colorPrimary}</label>
                       <button 
                         style={{ 
                           width: '44px', height: '44px', borderRadius: '50%', 
@@ -502,7 +514,7 @@ export default function Orcamento() {
                       onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(18,24,36,0.03)'}
                       onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                     >
-                      <label style={{ fontSize: '0.9rem', fontWeight: 600, pointerEvents: 'none' }}>Secundária</label>
+                      <label style={{ fontSize: '0.9rem', fontWeight: 600, pointerEvents: 'none' }}>{t.colorSecondary}</label>
                       <button 
                         style={{ 
                           width: '44px', height: '44px', borderRadius: '50%', 
@@ -523,7 +535,7 @@ export default function Orcamento() {
                   onClick={() => setStep(4)}
                   style={{ position: 'relative', transform: 'none' }}
                 >
-                  Continuar
+                  {t.continueBtn}
                 </button>
               </div>
             </motion.div>
@@ -537,14 +549,14 @@ export default function Orcamento() {
               exit={{ opacity: 0, x: -100 }}
               transition={{ duration: 0.4, ease: "easeInOut" }}
               className="step-content">
-              <span className="step-counter">4 de 5</span>
-              <h1 className="step-question">Como você gosta de ser chamado?</h1>
+              <span className="step-counter">{t.stepCounter(4, 5)}</span>
+              <h1 className="step-question">{t.q4}</h1>
               
               <div className="input-container">
                 <input 
                   type="text"
                   className="open-text-input single-line" 
-                  placeholder="Seu nome ou apelido"
+                  placeholder={t.q4Placeholder}
                   value={formData.nome}
                   onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
                   onKeyDown={(e) => {
@@ -559,7 +571,7 @@ export default function Orcamento() {
                   className={`btn-highlight btn-step-continuar ${formData.nome.trim() !== '' ? 'visible' : ''}`}
                   onClick={() => setStep(5)}
                 >
-                  Continuar
+                  {t.continueBtn}
                 </button>
               </div>
             </motion.div>
@@ -573,14 +585,14 @@ export default function Orcamento() {
               exit={{ opacity: 0, x: -100 }}
               transition={{ duration: 0.4, ease: "easeInOut" }}
               className="step-content">
-              <span className="step-counter">5 de 5</span>
-              <h1 className="step-question">Qual o seu melhor contato (WhatsApp)?</h1>
+              <span className="step-counter">{t.stepCounter(5, 5)}</span>
+              <h1 className="step-question">{t.q5}</h1>
               
               <div className="input-container">
                 <input 
                   type="tel"
                   className="open-text-input single-line" 
-                  placeholder="Apenas números (Ex: 11999999999)"
+                  placeholder={t.q5Placeholder}
                   value={formData.contato}
                   onChange={(e) => {
                     const onlyNumbers = e.target.value.replace(/\D/g, '');
@@ -598,7 +610,7 @@ export default function Orcamento() {
                   className={`btn-highlight btn-step-continuar ${formData.contato.trim() !== '' ? 'visible' : ''}`}
                   onClick={() => handleSubmit()}
                 >
-                  Enviar Solicitação
+                  {t.submitBtn}
                 </button>
               </div>
             </motion.div>
@@ -612,9 +624,9 @@ export default function Orcamento() {
               exit={{ opacity: 0, x: -100 }}
               transition={{ duration: 0.4, ease: "easeInOut" }}
               className="step-content" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '50vh' }}>
-              <h1 className="step-question" style={{ color: 'var(--color-accent)', marginBottom: '1rem' }}>Mensagem Encaminhada!</h1>
+              <h1 className="step-question" style={{ color: 'var(--color-accent)', marginBottom: '1rem' }}>{t.q6Title}</h1>
               <p style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', textAlign: 'center', maxWidth: '400px' }}>
-                Entrarei em contato.
+                {t.q6Desc}
               </p>
             </motion.div>
           )}

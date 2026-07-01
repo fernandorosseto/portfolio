@@ -3,43 +3,11 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-
-const projects = [
-  { 
-    id: 1, 
-    title: 'Clínica de Psicologia', 
-    img: '/siteEsistemaAgendamentoPsico.png', 
-    type: 'site', 
-    url: 'https://www.amandaladeirapsi.com.br/', 
-    desc: 'Site institucional moderno para atendimentos psicológicos, contando com sistema de agendamento online inteligente e arquitetura focada na captação de pacientes.' 
-  },
-  { 
-    id: 2, 
-    title: 'Cadastro de Atividades Homeschooling', 
-    img: '/sistemadeRegistroAtividadeHomeschoopling.png', 
-    type: 'site', 
-    url: 'https://www.centelhahomeschooling.com.br/vendas', 
-    desc: 'Landing page de alta conversão para o Centelha Homeschooling, apresentando um sistema exclusivo e completo para o registro de atividades domiciliares.' 
-  },
-  { 
-    id: 3, 
-    title: 'Portal do Colaborador', 
-    img: '/holeritesUnipac.png', 
-    type: 'sistema', 
-    url: '', 
-    desc: 'Plataforma corporativa segura e ágil projetada para os colaboradores da UNIPAC acessarem de forma unificada seus holerites e informações.' 
-  },
-  { 
-    id: 4, 
-    title: 'Dashboard RD Station', 
-    img: '/dashboardStreamlitRdStation.png', 
-    type: 'sistema', 
-    url: '', 
-    desc: 'Painel de Business Intelligence (BI) interativo desenvolvido em Streamlit com processamento de dados do RD Station para análise profunda de indicadores.' 
-  }
-];
+import { useLanguage } from "../context/LanguageContext";
+import LanguageToggle from "../components/LanguageToggle";
 
 export default function Portfolio() {
+  const { t } = useLanguage();
   const [activeCard, setActiveCard] = useState(null);
   const [mounted, setMounted] = useState(false);
 
@@ -47,17 +15,53 @@ export default function Portfolio() {
     setMounted(true);
   }, []);
 
+  const projects = [
+    { 
+      id: 1, 
+      title: t.proj1Title, 
+      img: '/siteEsistemaAgendamentoPsico.png', 
+      type: 'site', 
+      url: 'https://www.amandaladeirapsi.com.br/', 
+      desc: t.proj1Desc 
+    },
+    { 
+      id: 2, 
+      title: t.proj2Title, 
+      img: '/sistemadeRegistroAtividadeHomeschoopling.png', 
+      type: 'site', 
+      url: 'https://www.centelhahomeschooling.com.br/vendas', 
+      desc: t.proj2Desc 
+    },
+    { 
+      id: 3, 
+      title: t.proj3Title, 
+      img: '/holeritesUnipac.png', 
+      type: 'sistema', 
+      url: '', 
+      desc: t.proj3Desc 
+    },
+    { 
+      id: 4, 
+      title: t.proj4Title, 
+      img: '/dashboardStreamlitRdStation.png', 
+      type: 'sistema', 
+      url: '', 
+      desc: t.proj4Desc 
+    }
+  ];
+
   if (!mounted) return null;
 
   return (
     <main className="portfolio-container">
       <nav className="portfolio-nav">
-        <Link href="/" className="back-button">← Voltar</Link>
+        <Link href="/" className="back-button">{t.back}</Link>
+        <LanguageToggle />
       </nav>
 
       <div className="portfolio-header">
-        <h1 className="portfolio-title">Meus Projetos</h1>
-        <p className="portfolio-subtitle">Um pouco do que venho construindo.</p>
+        <h1 className="portfolio-title">{t.myProjects}</h1>
+        <p className="portfolio-subtitle">{t.portfolioSubtitle}</p>
       </div>
 
       <div className={`portfolio-grid ${projects.length <= 4 ? 'grid-2-cols' : 'grid-3-cols'}`}>
@@ -79,7 +83,7 @@ export default function Portfolio() {
             </div>
             <div className="card-overlay">
               <span className="card-type-label">
-                {project.type === 'site' ? 'Website' : 'Sistema Online'}
+                {project.type === 'site' ? t.website : t.onlineSystem}
               </span>
               <h3 className="card-title-hover">{project.title}</h3>
             </div>
@@ -92,7 +96,7 @@ export default function Portfolio() {
         return (
           <div className="portfolio-modal-backdrop" onClick={() => setActiveCard(null)}>
             <div className="portfolio-modal" onClick={e => e.stopPropagation()}>
-              <button className="modal-back-button" onClick={() => setActiveCard(null)}>← Voltar</button>
+              <button className="modal-back-button" onClick={() => setActiveCard(null)}>{t.back}</button>
               
               <div className="modal-image-container">
                 <Image 
@@ -105,18 +109,18 @@ export default function Portfolio() {
               
               <div className="modal-content">
                 <h2>{project.title}</h2>
-                <p className="modal-subtitle">{project.type === 'site' ? 'Website' : 'Sistema Fechado'}</p>
+                <p className="modal-subtitle">{project.type === 'site' ? t.website : t.closedSystem}</p>
                 
                 <p className="description">{project.desc}</p>
                 
                 <div className="modal-actions">
                   {project.type === 'site' ? (
                     <a href={project.url} target="_blank" rel="noopener noreferrer" className="btn-highlight">
-                      Ir para o site
+                      {t.goToSite}
                     </a>
                   ) : (
                     <div className="info-box">
-                      🔒 Acesso restrito (Uso interno do cliente)
+                      {t.restrictedAccess}
                     </div>
                   )}
                 </div>
